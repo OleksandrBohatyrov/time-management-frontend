@@ -1,22 +1,34 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post('https://localhost:7150/api/Users/login', {
-                username,
-                password
-            });
-            localStorage.setItem('user', JSON.stringify(response.data.user));
-            window.location.href = '/dashboard';
+            const response = await axios.post('https://localhost:7150/api/Users/login', { username, password }, { withCredentials: true });
+            console.log("Ответ от сервера:", response);
+
+            const { username: returnedUsername, role } = response.data;
+            localStorage.setItem('user', JSON.stringify({ username: returnedUsername, role }));
+
+            if (role === 'Admin') {
+                navigate('/admin');
+            } else {
+                navigate('/dashboard');
+            }
         } catch (error) {
-            alert('Ошибка при входе: ' + error.response?.data || 'Неизвестная ошибка');
+            console.error("Ошибка при входе:", error);
+            alert('Ошибка при входе');
         }
     };
+
+
+
 
     return (
         <div>

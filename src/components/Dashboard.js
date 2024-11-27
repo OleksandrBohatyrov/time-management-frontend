@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import AdminPanel from './AdminPanel';
-
+axios.defaults.withCredentials = true;
 function Dashboard() {
     const [tasks, setTasks] = useState([]);
     const [projects, setProjects] = useState([]);
@@ -17,11 +17,8 @@ function Dashboard() {
 
     const fetchTasksAndProjects = async () => {
         try {
-            const tasksResponse = await axios.get('https://localhost:7150/api/Tasks');
+            const tasksResponse = await axios.get('https://localhost:7150/api/Tasks/userTasks');
             setTasks(tasksResponse.data);
-
-            const projectsResponse = await axios.get('https://localhost:7150/api/Projects');
-            setProjects(projectsResponse.data);
         } catch (error) {
             console.error('Ошибка при получении задач и проектов:', error);
         }
@@ -36,19 +33,9 @@ function Dashboard() {
             <div>
                 <h3>Список задач</h3>
                 {tasks.map((task) => (
-                    <div key={task.id}>
+                    <div key={task.id} style={{ backgroundColor: task.isCompleted ? 'lightgreen' : 'white' }}>
                         <h4>{task.title}</h4>
                         <p>{task.description}</p>
-                    </div>
-                ))}
-            </div>
-
-            <div>
-                <h3>Список проектов</h3>
-                {projects.map((project) => (
-                    <div key={project.id}>
-                        <h4>{project.title}</h4>
-                        <p>{project.description}</p>
                     </div>
                 ))}
             </div>
