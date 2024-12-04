@@ -1,44 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import AdminPanel from './AdminPanel';
-axios.defaults.withCredentials = true;
+import { useNavigate } from 'react-router-dom';
+
 function Dashboard() {
-    const [tasks, setTasks] = useState([]);
+    const navigate = useNavigate();
     const [projects, setProjects] = useState([]);
-    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const loggedInUser = JSON.parse(localStorage.getItem('user'));
-        setUser(loggedInUser);
-        if (loggedInUser) {
-            fetchTasksAndProjects();
+        const role = localStorage.getItem('userRole');
+        if (!role) {
+            navigate('/login');
+        } else {
+            fetchProjects();
         }
-    }, []);
+    }, [navigate]);
 
-    const fetchTasksAndProjects = async () => {
+    const fetchProjects = async () => {
         try {
-            const tasksResponse = await axios.get('https://localhost:7150/api/Tasks/userTasks');
-            setTasks(tasksResponse.data);
+            const response = await axios.get('https://localhost:7150/api/Projects');
+            setProjects(response.data);
         } catch (error) {
-            console.error('Ошибка при получении задач и проектов:', error);
+            alert('Failed to load projects');
         }
     };
 
     return (
         <div>
-            <h2>Добро пожаловать, {user?.username}</h2>
-
-            {user?.role === 'Admin' && <AdminPanel fetchTasksAndProjects={fetchTasksAndProjects} />}
-
-            <div>
-                <h3>Список задач</h3>
-                {tasks.map((task) => (
-                    <div key={task.id} style={{ backgroundColor: task.isCompleted ? 'lightgreen' : 'white' }}>
-                        <h4>{task.title}</h4>
-                        <p>{task.description}</p>
-                    </div>
-                ))}
-            </div>
+            <h1>Dashboard</h1>
+            {projects.map((project) => (
+                <div key={project.id}>
+                    <h3>{project.name}</h3>
+                    <p>{project.description}</p>
+                </div>
+            ))}
         </div>
     );
 }

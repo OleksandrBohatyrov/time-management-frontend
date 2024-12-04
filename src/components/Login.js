@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-axios.defaults.withCredentials = true;
+import { useNavigate } from 'react-router-dom';
+
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -10,32 +10,37 @@ function Login() {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post('https://localhost:7150/api/Users/login', { username, password }, { withCredentials: true });
-            console.log("Ответ от сервера:", response);
-
-            const { username: returnedUsername, role } = response.data;
-            localStorage.setItem('user', JSON.stringify({ username: returnedUsername, role }));
-
-            if (role === 'Admin') {
+            const response = await axios.post('https://localhost:7150/api/Users/login', {
+                username,
+                password,
+            });
+            localStorage.setItem('userRole', response.data.role);
+            if (response.data.role === 'Admin') {
                 navigate('/admin');
             } else {
                 navigate('/dashboard');
             }
         } catch (error) {
-            console.error("Ошибка при входе:", error);
-            alert('Ошибка при входе');
+            alert('Invalid login credentials');
         }
     };
 
-
-
-
     return (
         <div>
-            <h2>Вход</h2>
-            <input type="text" placeholder="Имя пользователя" value={username} onChange={(e) => setUsername(e.target.value)} />
-            <input type="password" placeholder="Пароль" value={password} onChange={(e) => setPassword(e.target.value)} />
-            <button onClick={handleLogin}>Войти</button>
+            <h1>Login</h1>
+            <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+            />
+            <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            />
+            <button onClick={handleLogin}>Login</button>
         </div>
     );
 }
