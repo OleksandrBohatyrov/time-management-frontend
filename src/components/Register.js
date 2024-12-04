@@ -9,37 +9,37 @@ function Register() {
     const handleRegister = async () => {
         try {
             await axios.post('https://localhost:7150/api/Users/register', formData);
-            alert('Registration successful! You can now log in.');
-            navigate('/login'); // Переход на страницу логина после регистрации
+            alert('Registreerimine edukas! Nüüd saate sisse logida.');
+            navigate('/login'); 
         } catch (error) {
             console.error('Error registering user:', error);
-            alert('Registration failed!');
+            alert('Registreerimine ebaõnnestus!');
         }
     };
 
     return (
         <div>
-            <h1>Register</h1>
+            <h1>Registreeri</h1>
             <input
                 type="text"
-                placeholder="Username"
+                placeholder="Kasutajanimi"
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
             />
             <input
                 type="email"
-                placeholder="Email"
+                placeholder="E-post"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
             <input
                 type="password"
-                placeholder="Password"
+                placeholder="Salasõna"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             />
-            <button onClick={handleRegister}>Register</button>
-            <button onClick={() => navigate('/login')}>Go to Login</button>
+            <button onClick={handleRegister}>Registreeri</button>
+            <button onClick={() => navigate('/login')}>Mine sisselogimisele</button>
         </div>
     );
 }

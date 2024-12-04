@@ -70,3 +70,15 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
 }
+
+.task-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .task-card {
+    border: 1px solid #ccc;
+    padding: 16px;
+    border-radius: 8px;
+    background-color: #fff;
+  }

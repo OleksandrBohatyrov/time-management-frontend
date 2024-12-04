@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-
-function Login() {
+function Login({ setRole, setIsLoggedIn }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -14,33 +13,45 @@ function Login() {
                 username,
                 password,
             });
-            localStorage.setItem('userRole', response.data.role);
-            if (response.data.role === 'Admin') {
-                navigate('/admin');
+
+            if (response.status === 200 && response.data.role) {
+                localStorage.setItem('role', response.data.role);
+                localStorage.setItem('userId', response.data.userId);
+                setRole(response.data.role);
+                setIsLoggedIn(true);
+
+                console.log('Login successful:', response.data);
+
+                if (response.data.role === 'Admin') {
+                    navigate('/admin');
+                } else {
+                    navigate('/dashboard');
+                }
             } else {
-                navigate('/dashboard');
+                alert('Login failed: Invalid credentials.');
             }
         } catch (error) {
-            alert('Invalid login credentials');
+            console.error('Error during login:', error);
+            alert('Login failed: Please check your username and password.');
         }
     };
 
     return (
         <div>
-            <h1>Login</h1>
+            <h2>Logi sisse</h2>
             <input
                 type="text"
-                placeholder="Username"
+                placeholder="Kasutajanimi"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
             />
             <input
                 type="password"
-                placeholder="Password"
+                placeholder="Salasõna"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
-            <button onClick={handleLogin}>Login</button>
+            <button onClick={handleLogin}>Logi sisse</button>
         </div>
     );
 }
